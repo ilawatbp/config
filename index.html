@@ -98,21 +98,21 @@
   <div id="hamburger" onclick="toggleControls()">☰</div>
   <div class="controls">
     <label>Pattern:
-<select id="pattern">
-  <option value="flat">Flat</option>
-  <option value="wave">Wave</option>
-  <option value="ripple">Ripple</option>
-  <option value="diagonal">Diagonal</option>
-  <option value="checkerboard">Checkerboard</option>
-  <option value="radial-step">Radial Step</option>
-  <option value="random">Random</option>
-  <option value="clustered-peaks">Clustered Peaks</option>
-  <option value="spiral">Spiral</option>
-  <option value="stairs">Stairs</option>
-  <option value="mirror">Mirror</option>
-  <option value="bowl">Bowl</option>
-  <option value="dome">Dome</option>
-</select>
+      <select id="pattern">
+        <option value="flat">Flat</option>
+        <option value="wave">Wave</option>
+        <option value="ripple">Ripple</option>
+        <option value="diagonal">Diagonal</option>
+        <option value="checkerboard">Checkerboard</option>
+        <option value="radial-step">Radial Step</option>
+        <option value="random">Random</option>
+        <option value="clustered-peaks">Clustered Peaks</option>
+        <option value="spiral">Spiral</option>
+        <option value="stairs">Stairs</option>
+        <option value="mirror">Mirror</option>
+        <option value="bowl">Bowl</option>
+        <option value="dome">Dome</option>
+      </select>
     </label>
     <label>Rows:<br>
       <input type="range" min="1" max="20" value="8" oninput="rows.value = this.value; rowsRange.value = this.value;"
@@ -125,25 +125,25 @@
       <input type="number" id="columns" min="1" max="20" value="8">
     </label>
     <p>Composition dimensions</p>
-    <label>Surface Length:<br>
+    <!-- <label>Surface Length:<br>
       <input type="range" min="1" max="1000" value="200"
         oninput="surfaceLength.value = this.value; surfaceLengthRange.value = this.value;" id="surfaceLengthRange">
       <input type="number" id="surfaceLength" min="1" max="1000" value="200">
-    </label>
-    <label>Surface Width:<br>
+    </label> -->
+    <!-- <label>Surface Width:<br>
       <input type="range" min="1" max="1000" value="200"
         oninput="surfaceWidth.value = this.value; surfaceWidthRange.value = this.value;" id="surfaceWidthRange">
       <input type="number" id="surfaceWidth" min="1" max="1000" value="200">
-    </label>
+    </label> -->
     <label>Surface Height:<br>
-      <input type="range" min="1" max="1000" value="150"
+      <input type="range" min="1" max="1000" value="100"
         oninput="surfaceHeight.value = this.value; surfaceHeightRange.value = this.value;" id="surfaceHeightRange">
-      <input type="number" id="surfaceHeight" min="1" max="1000" value="150">
+      <input type="number" id="surfaceHeight" min="0" max="1000" value="100">
     </label>
     <label>Spacing:<br>
-      <input type="range" min="1" max="100" value="35"
+      <input type="range" min="1" max="100" value="0"
         oninput="spacing.value = this.value; spacingRange.value = this.value;" id="spacingRange">
-      <input type="number" id="spacing" min="1" max="100" value="35">
+      <input type="number" id="spacing" min="0" max="100" value="0">
     </label>
     <label>Lowest From Ground:<br>
       <input type="range" min="1" max="1000" value="0"
@@ -151,9 +151,9 @@
       <input type="number" id="lowest" min="1" max="1000" value="0">
     </label>
     <label>Highest From Ground:<br>
-      <input type="range" min="1" max="1000" value="100"
+      <input type="range" min="0" max="1000" value="0"
         oninput="highest.value = this.value; highestRange.value = this.value;" id="highestRange">
-      <input type="number" id="highest" min="1" max="1000" value="100">
+      <input type="number" id="highest" min="0" max="1000" value="0">
     </label>
     <button id="generate" disabled>Generate Grid</button>
   </div>
@@ -193,24 +193,24 @@
       scene.children = scene.children.filter(obj => !obj.userData.isPendant && obj !== surfaceMesh);
       pendantStrings.forEach(s => scene.remove(s));
       pendantStrings.length = 0;
-            clearDimensionLines();
+      clearDimensionLines();
     }
 
-function clearDimensionLines() {
-// Remove lines from scene
-dimensionLines.forEach(line => scene.remove(line));
-dimensionLines.length = 0;
+    function clearDimensionLines() {
+      // Remove lines from scene
+      dimensionLines.forEach(line => scene.remove(line));
+      dimensionLines.length = 0;
 
-// Remove labels from DOM
-dimensionLabels.forEach(label => label.remove());
-dimensionLabels.length = 0;
-}
+      // Remove labels from DOM
+      dimensionLabels.forEach(label => label.remove());
+      dimensionLabels.length = 0;
+    }
 
 
     const dimensionLines = [];
     const dimensionLabels = [];
 
-  function createDimensionLine(start, end, label) {
+    function createDimensionLine(start, end, label) {
       const material = new THREE.LineBasicMaterial({ color: 0x000000 });
       const points = [start, end];
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -257,16 +257,22 @@ dimensionLabels.length = 0;
       const lowest = +lowestRange.value;
       const highest = +highestRange.value;
       const surfaceHeight = +surfaceHeightRange.value;
-      const surfaceLength = +surfaceLengthRange.value;
-      const surfaceWidth = +surfaceWidthRange.value;
+      // let surfaceLength = +surfaceLengthRange.value;
+      // let surfaceWidth = +surfaceWidthRange.value;
       const pattern = document.getElementById('pattern').value;
 
       if (surfaceHeight < lowest || surfaceHeight < highest) {
         alert("INVALID HEIGHT"); return;
       }
 
-      const offsetX = -(cols - 1) * spacing / 2;
-      const offsetZ = -(rows - 1) * spacing / 2;
+      const offsetX = -((cols - 1)/2) * spacing / 2;
+      const surfaceWidth = ((cols - 1)/2) * spacing;  
+      const offsetZ = -((rows - 1)/2) * spacing / 2;
+      const surfaceLength = ((rows - 1)/2) * spacing;
+      console.log(offsetX);
+
+
+      
       const objHeight = new THREE.Box3().setFromObject(pendantModel.clone()).getSize(new THREE.Vector3()).y;
 
       for (let r = 0; r < rows; r++) {
@@ -275,33 +281,33 @@ dimensionLabels.length = 0;
           const progress = (r + c) / (rows + cols);
 
           switch (pattern) {
-            // case 'wave':
-            //   yOffset = (Math.sin(c * 0.5) + Math.cos(r * 0.5)) * 15 + 50;
-            //   break;
-
             case 'wave':
-            const height = (lowest + highest) / 2;
-            const amplitude = (highest - lowest) / 2;
-            yOffset = height + (Math.sin(c * 0.5) + Math.cos(r * 0.5)) * amplitude;
-            break;
+              const highestY = highest;
+              const lowestY = lowest;
+
+              const mid = (highestY + lowestY) / 2;
+              const amplitude = (lowestY - highestY) / 2;
+
+              yOffset = mid + (Math.sin(c * 0.5) + Math.cos(r * 0.5)) * amplitude * 0.5;
+              break;
 
 
             case 'ripple': {
               const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
               const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
               yOffset = Math.sin(distance * 0.8) * 20 + 50;
-              
-              console.log(`row:${r}, col:${c}`)
-              console.log(`rx: ${rx}, cxoffset: ${cxOffset}||${rx} * ${rx} + ${cxOffset} * ${cxOffset} = ${distance}`);
-              console.log(`---------------------------------------------------`)
+
+              // console.log(`row:${r}, col:${c}`)
+              // console.log(`rx: ${rx}, cxoffset: ${cxOffset}||${rx} * ${rx} + ${cxOffset} * ${cxOffset} = ${distance}`);
+              // console.log(`---------------------------------------------------`)
 
               break;
             }
             case 'diagonal':
               yOffset = lowest + (highest - lowest) * ((r + c) / (rows + cols - 2));
               break;
-            
-            case 'checkerboard':{
+
+            case 'checkerboard': {
               yOffset = ((r + c) % 2 ? highest : lowest);
               break;
               // const height = (lowest + highest) / 2;
@@ -309,27 +315,27 @@ dimensionLabels.length = 0;
               // break;
             }
 
-            case 'radial-step':{
+            case 'radial-step': {
               const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
               const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
               const height = (lowest + highest) / 2;
-            yOffset = height + Math.floor(distance) * 10;
-            break;
+              yOffset = height + Math.floor(distance) * 10;
+              break;
             }
 
             case 'clustered-peaks': {
-            const dx = c - cols / 2;
-            const dy = r - rows / 2;
-            const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
-            const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
-            // const height = (lowest + highest) / 2;
-            const height = lowest;
-            const clusterDist = Math.sqrt((dx - 1) ** 2 + (dy - 1) ** 2);
-            yOffset = height + (clusterDist < 1.5 ? 30 : Math.random() * 10);
-            break;
+              const dx = c - cols / 2;
+              const dy = r - rows / 2;
+              const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
+              const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
+              // const height = (lowest + highest) / 2;
+              const height = lowest;
+              const clusterDist = Math.sqrt((dx - 1) ** 2 + (dy - 1) ** 2);
+              yOffset = height + (clusterDist < 1.5 ? 30 : Math.random() * 10);
+              break;
             }
 
-            case 'spiral':{
+            case 'spiral': {
               const dx = c - cols / 2;
               const dy = r - rows / 2;
               const angle = Math.atan2(dy, dx);
@@ -339,7 +345,7 @@ dimensionLabels.length = 0;
               yOffset = height + angle * 10 + distance * 5;
               break;
             }
-            case 'stairs':{
+            case 'stairs': {
               const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
               const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
               const height = (lowest + highest) / 2;
@@ -347,7 +353,7 @@ dimensionLabels.length = 0;
               break;
             }
 
-            case 'mirror':{
+            case 'mirror': {
               const dx = c - cols / 2;
               const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
               const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
@@ -355,22 +361,22 @@ dimensionLabels.length = 0;
               yOffset = height + Math.abs(dx) * 10;
               break;
             }
-            case 'bowl':{
-            const dx = c - cols / 2;
-            const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
-            const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
+            case 'bowl': {
+              const dx = c - cols / 2;
+              const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
+              const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
               const height = (lowest + highest) / 2;
-            yOffset = height - distance * 10;
+              yOffset = height - distance * 10;
             }
 
-            case 'dome':{
-            const dx = c - cols / 2;
-            const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
-            const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
-            const height = (lowest + highest) / 2;
-            yOffset = height + distance * 10;
-            }            
-            break;
+            case 'dome': {
+              const dx = c - cols / 2;
+              const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
+              const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
+              const height = (lowest + highest) / 2;
+              yOffset = height + distance * 10;
+            }
+              break;
             default:
               yOffset = highest;
 
@@ -380,7 +386,9 @@ dimensionLabels.length = 0;
 
           const clone = pendantModel.clone();
           clone.scale.set(5, 5, 5);
-          clone.position.set(offsetX + c * spacing, yOffset, offsetZ + r * spacing);
+          // clone.position.set(offsetX + c * spacing, yOffset, offsetZ + r * spacing);
+          clone.position.set(offsetX + (c/2) * spacing, yOffset, offsetZ + (r/2) * spacing);
+          // console.log(`x: ${offsetX + c * spacing}, y: ${yOffset}, z: ${offsetZ + r * spacing}`)
           clone.userData.isPendant = true;
           scene.add(clone);
 
@@ -392,6 +400,22 @@ dimensionLabels.length = 0;
           string.position.set(clone.position.x, yOffset + stringHeight / 2, clone.position.z);
           scene.add(string);
           pendantStrings.push(string);
+
+          // Compute bounding box for dimension line
+          const box = new THREE.Box3().setFromObject(clone);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          const center = new THREE.Vector3();
+          box.getCenter(center);
+
+          if(c == 0 && r == 0){
+          createDimensionLine( 
+          new THREE.Vector3(center.x - size.x / 2 , center.y , center.z),
+          new THREE.Vector3(center.x + size.x / 2 , center.y , center.z),
+          `${(size.x).toFixed(2)}`
+          );
+          }
+
         }
       }
 
@@ -405,39 +429,32 @@ dimensionLabels.length = 0;
       scene.add(surfaceMesh);
 
 
-
-
-
-
-
-
-
-// Add surface above pendants
+      // Add surface above pendants
 
 
       // Add dimension lines here (OUTSIDE of createDimensionLine definition)
       const height = surfaceHeight; // Replace with actual value if needed
       const width = surfaceWidth;
       const length = surfaceLength;
-      console.log(width)
-      console.log(length)
+      // console.log(width)
+      // console.log(length)
 
       createDimensionLine(
         new THREE.Vector3(-width / 2, 0, -length / 2),
         new THREE.Vector3(width / 2, 0, -length / 2),
-        `${width} mm`
+        `${width}`
       );
 
-        createDimensionLine(
-          new THREE.Vector3(-width/2, 0, -length/2),
-          new THREE.Vector3(-width/2, height, -length/2),
-          `${height} cm`
-        );
+      createDimensionLine(
+        new THREE.Vector3(-width / 2, 0, -length / 2),
+        new THREE.Vector3(-width / 2, height, -length / 2),
+        `${height}`
+      );
 
       createDimensionLine(
         new THREE.Vector3(-width / 2, 0, -length / 2),
         new THREE.Vector3(-width / 2, 0, length / 2),
-        `${length} mm`
+        `${length}`
       );
 
 
@@ -447,7 +464,7 @@ dimensionLabels.length = 0;
 
 
     });
-    
+
 
     function animate() {
       requestAnimationFrame(animate);
