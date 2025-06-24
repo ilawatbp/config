@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <title>Pendant Configurator with Patterns</title>
@@ -115,35 +114,40 @@
       </select>
     </label>
     <label>Rows:<br>
-      <input type="range" min="1" max="20" value="8" oninput="rows.value = this.value; rowsRange.value = this.value;"
+      <input type="range" min="1" max="20" value="4" oninput="rows.value = this.value; rowsRange.value = this.value;"
         id="rowsRange">
-      <input type="number" id="rows" min="1" max="20" value="8">
+      <input type="number" id="rows" min="1" max="20" value="4">
     </label>
     <label>Columns:<br>
-      <input type="range" min="1" max="20" value="8"
+      <input type="range" min="1" max="20" value="4"
         oninput="columns.value = this.value; columnsRange.value = this.value;" id="columnsRange">
-      <input type="number" id="columns" min="1" max="20" value="8">
+      <input type="number" id="columns" min="1" max="20" value="4">
     </label>
     <p>Composition dimensions</p>
-    <!-- <label>Surface Length:<br>
-      <input type="range" min="1" max="1000" value="200"
-        oninput="surfaceLength.value = this.value; surfaceLengthRange.value = this.value;" id="surfaceLengthRange">
-      <input type="number" id="surfaceLength" min="1" max="1000" value="200">
+        <!-- <label>Surface Length:<br>
+    <input type="range" min="1" max="1000" value="200"
+    oninput="surfaceLength.value = this.value; surfaceLengthRange.value = this.value;" id="surfaceLengthRange">
+    <input type="number" id="surfaceLength" min="1" max="1000" value="200">
     </label> -->
-    <!-- <label>Surface Width:<br>
-      <input type="range" min="1" max="1000" value="200"
-        oninput="surfaceWidth.value = this.value; surfaceWidthRange.value = this.value;" id="surfaceWidthRange">
-      <input type="number" id="surfaceWidth" min="1" max="1000" value="200">
+        <!-- <label>Surface Width:<br>
+    <input type="range" min="1" max="1000" value="200"
+    oninput="surfaceWidth.value = this.value; surfaceWidthRange.value = this.value;" id="surfaceWidthRange">
+    <input type="number" id="surfaceWidth" min="1" max="1000" value="200">
     </label> -->
     <label>Surface Height:<br>
-      <input type="range" min="1" max="1000" value="100"
+      <input type="range" min="0" max="1000" value="100"
         oninput="surfaceHeight.value = this.value; surfaceHeightRange.value = this.value;" id="surfaceHeightRange">
       <input type="number" id="surfaceHeight" min="0" max="1000" value="100">
     </label>
+    <label>Base Offset:<br>
+      <input type="range" min="0" max="100" value="10"
+        oninput="baseoffset.value = this.value; baseoffsetRange.value = this.value;" id="baseoffsetRange">
+      <input type="number" id="baseoffset" min="0" max="100" value="10">
+    </label>
     <label>Spacing:<br>
-      <input type="range" min="1" max="100" value="0"
+      <input type="range" min="1" max="100" value="35"
         oninput="spacing.value = this.value; spacingRange.value = this.value;" id="spacingRange">
-      <input type="number" id="spacing" min="0" max="100" value="0">
+      <input type="number" id="spacing" min="0" max="100" value="35">
     </label>
     <label>Lowest From Ground:<br>
       <input type="range" min="1" max="1000" value="0"
@@ -167,6 +171,8 @@
     scene.background = new THREE.Color(0x9e9e9e);
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 300);
+    // camera.position.set(0, 80, 120);
+
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
@@ -253,26 +259,24 @@
 
       const rows = +rowsRange.value;
       const cols = +columnsRange.value;
-      const spacing = +spacingRange.value;
+      const spacing = +spacingRange.value * 2;
       const lowest = +lowestRange.value;
       const highest = +highestRange.value;
       const surfaceHeight = +surfaceHeightRange.value;
-      // let surfaceLength = +surfaceLengthRange.value;
-      // let surfaceWidth = +surfaceWidthRange.value;
+      const baseoffset = +baseoffsetRange.value;
+      // const surfaceLength = +surfaceLengthRange.value;
+      // const surfaceWidth = +surfaceWidthRange.value;
       const pattern = document.getElementById('pattern').value;
 
       if (surfaceHeight < lowest || surfaceHeight < highest) {
         alert("INVALID HEIGHT"); return;
       }
 
-      const offsetX = -((cols - 1)/2) * spacing / 2;
-      const surfaceWidth = ((cols - 1)/2) * spacing;  
-      const offsetZ = -((rows - 1)/2) * spacing / 2;
-      const surfaceLength = ((rows - 1)/2) * spacing;
-      console.log(offsetX);
+      const offsetX = -((cols - 1) / 2) * spacing / 2;
+      const offsetZ = -((rows - 1) / 2) * spacing / 2;
+      const surfaceWidth = ((cols - 1) / 2) * spacing + baseoffset;
+      const surfaceLength = ((rows - 1) / 2) * spacing + baseoffset;
 
-
-      
       const objHeight = new THREE.Box3().setFromObject(pendantModel.clone()).getSize(new THREE.Vector3()).y;
 
       for (let r = 0; r < rows; r++) {
@@ -281,6 +285,9 @@
           const progress = (r + c) / (rows + cols);
 
           switch (pattern) {
+            case 'flat':
+              yOffset = 0;
+              break;
             case 'wave':
               const highestY = highest;
               const lowestY = lowest;
@@ -378,21 +385,19 @@
             }
               break;
             default:
-              yOffset = highest;
+              yOffset = surfaceHeight;
 
           }
 
-          // yOffset = THREE.MathUtils.clamp(yOffset, lowest, highest);
+          // yOffset = THREE.MathUtilsclamp(yOffset, lowest, highest);
 
+          // clone.scale.set(5, 5, 5);
           const clone = pendantModel.clone();
-          clone.scale.set(5, 5, 5);
-          // clone.position.set(offsetX + c * spacing, yOffset, offsetZ + r * spacing);
-          clone.position.set(offsetX + (c/2) * spacing, yOffset, offsetZ + (r/2) * spacing);
-          // console.log(`x: ${offsetX + c * spacing}, y: ${yOffset}, z: ${offsetZ + r * spacing}`)
+          clone.position.set(offsetX + (c / 2) * spacing, yOffset, offsetZ + (r / 2) * spacing);
           clone.userData.isPendant = true;
           scene.add(clone);
 
-          const stringHeight = (objHeight + surfaceHeight) - yOffset;
+          const stringHeight = (surfaceHeight) - yOffset;
           const string = new THREE.Mesh(
             new THREE.CylinderGeometry(0.2, 0.2, stringHeight, 8),
             new THREE.MeshStandardMaterial({ color: 0x222222 })
@@ -408,14 +413,13 @@
           const center = new THREE.Vector3();
           box.getCenter(center);
 
-          if(c == 0 && r == 0){
-          createDimensionLine( 
-          new THREE.Vector3(center.x - size.x / 2 , center.y , center.z),
-          new THREE.Vector3(center.x + size.x / 2 , center.y , center.z),
-          `${(size.x).toFixed(2)}`
-          );
+          if (c == 0 && r == 0) {
+            createDimensionLine(
+              new THREE.Vector3(center.x - size.x / 2, center.y, center.z),
+              new THREE.Vector3(center.x + size.x / 2, center.y, center.z),
+              `${(size.x).toFixed(2)}`
+            );
           }
-
         }
       }
 
@@ -425,19 +429,13 @@
         new THREE.MeshStandardMaterial({ color: 0x555555, side: THREE.DoubleSide })
       );
       surfaceMesh.rotation.x = -Math.PI / 2;
-      surfaceMesh.position.set(0, objHeight + surfaceHeight, 0);
+      surfaceMesh.position.set(0, surfaceHeight, 0);
       scene.add(surfaceMesh);
-
-
-      // Add surface above pendants
-
 
       // Add dimension lines here (OUTSIDE of createDimensionLine definition)
       const height = surfaceHeight; // Replace with actual value if needed
       const width = surfaceWidth;
       const length = surfaceLength;
-      // console.log(width)
-      // console.log(length)
 
       createDimensionLine(
         new THREE.Vector3(-width / 2, 0, -length / 2),
@@ -457,14 +455,7 @@
         `${length}`
       );
 
-
-
-
-
-
-
     });
-
 
     function animate() {
       requestAnimationFrame(animate);
