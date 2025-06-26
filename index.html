@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Pendant Configurator with Patterns</title>
@@ -114,9 +115,9 @@
       </select>
     </label>
     <label>Rows:<br>
-      <input type="range" min="1" max="20" value="4" oninput="rows.value = this.value; rowsRange.value = this.value;"
+      <input type="range" min="1" max="20" value="10" oninput="rows.value = this.value; rowsRange.value = this.value;"
         id="rowsRange">
-      <input type="number" id="rows" min="1" max="20" value="4">
+      <input type="number" id="rows" min="1" max="20" value="10">
     </label>
     <label>Columns:<br>
       <input type="range" min="1" max="20" value="4"
@@ -124,30 +125,30 @@
       <input type="number" id="columns" min="1" max="20" value="4">
     </label>
     <p>Composition dimensions</p>
-        <!-- <label>Surface Length:<br>
+    <!-- <label>Surface Length:<br>
     <input type="range" min="1" max="1000" value="200"
     oninput="surfaceLength.value = this.value; surfaceLengthRange.value = this.value;" id="surfaceLengthRange">
     <input type="number" id="surfaceLength" min="1" max="1000" value="200">
     </label> -->
-        <!-- <label>Surface Width:<br>
+    <!-- <label>Surface Width:<br>
     <input type="range" min="1" max="1000" value="200"
     oninput="surfaceWidth.value = this.value; surfaceWidthRange.value = this.value;" id="surfaceWidthRange">
     <input type="number" id="surfaceWidth" min="1" max="1000" value="200">
     </label> -->
     <label>Surface Height:<br>
-      <input type="range" min="0" max="1000" value="100"
+      <input type="range" min="0" max="1000" value="170"
         oninput="surfaceHeight.value = this.value; surfaceHeightRange.value = this.value;" id="surfaceHeightRange">
-      <input type="number" id="surfaceHeight" min="0" max="1000" value="100">
+      <input type="number" id="surfaceHeight" min="0" max="1000" value="170">
     </label>
     <label>Base Offset:<br>
-      <input type="range" min="0" max="100" value="10"
+      <input type="range" min="0" max="100" value="6"
         oninput="baseoffset.value = this.value; baseoffsetRange.value = this.value;" id="baseoffsetRange">
-      <input type="number" id="baseoffset" min="0" max="100" value="10">
+      <input type="number" id="baseoffset" min="0" max="100" value="6">
     </label>
     <label>Spacing:<br>
-      <input type="range" min="1" max="100" value="35"
+      <input type="range" min="1" max="100" value="14"
         oninput="spacing.value = this.value; spacingRange.value = this.value;" id="spacingRange">
-      <input type="number" id="spacing" min="0" max="100" value="35">
+      <input type="number" id="spacing" min="0" max="100" value="14">
     </label>
     <label>Lowest From Ground:<br>
       <input type="range" min="1" max="1000" value="0"
@@ -155,9 +156,9 @@
       <input type="number" id="lowest" min="1" max="1000" value="0">
     </label>
     <label>Highest From Ground:<br>
-      <input type="range" min="0" max="1000" value="0"
+      <input type="range" min="0" max="1000" value="155"
         oninput="highest.value = this.value; highestRange.value = this.value;" id="highestRange">
-      <input type="number" id="highest" min="0" max="1000" value="0">
+      <input type="number" id="highest" min="0" max="1000" value="155">
     </label>
     <button id="generate" disabled>Generate Grid</button>
   </div>
@@ -168,7 +169,7 @@
 
   <script>
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x9e9e9e);
+    scene.background = new THREE.Color(0xc7c7c7);
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 300);
     // camera.position.set(0, 80, 120);
@@ -217,7 +218,7 @@
     const dimensionLabels = [];
 
     function createDimensionLine(start, end, label) {
-      const material = new THREE.LineBasicMaterial({ color: 0x000000 });
+      const material = new THREE.LineBasicMaterial({ color: 0xcffadb});
       const points = [start, end];
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
       const line = new THREE.Line(geometry, material);
@@ -375,7 +376,7 @@
               const height = (lowest + highest) / 2;
               yOffset = height - distance * 10;
             }
-
+              break;
             case 'dome': {
               const dx = c - cols / 2;
               const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
@@ -384,10 +385,17 @@
               yOffset = height + distance * 10;
             }
               break;
+            case 'random': {
+              yOffset = Math.floor(Math.random() * (highest - lowest) + lowest);
+              // const yOffset = Math.floor(Math.random() * (highest - lowest) + lowest);
+            }
+              break;
             default:
               yOffset = surfaceHeight;
 
           }
+
+          console.log (yOffset)
 
           // yOffset = THREE.MathUtilsclamp(yOffset, lowest, highest);
 
@@ -399,8 +407,8 @@
 
           const stringHeight = (surfaceHeight) - yOffset;
           const string = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.2, 0.2, stringHeight, 8),
-            new THREE.MeshStandardMaterial({ color: 0x222222 })
+            new THREE.CylinderGeometry(0.1, 0.1, stringHeight, 8),
+            new THREE.MeshStandardMaterial({ color: 0x292929})
           );
           string.position.set(clone.position.x, yOffset + stringHeight / 2, clone.position.z);
           scene.add(string);
@@ -456,6 +464,7 @@
       );
 
     });
+    
 
     function animate() {
       requestAnimationFrame(animate);
@@ -474,6 +483,7 @@
 
     if (window.innerWidth < 768) document.querySelector('.controls').style.display = 'none';
   </script>
+
 </body>
 
 </html>
