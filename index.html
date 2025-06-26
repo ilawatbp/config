@@ -104,61 +104,51 @@
         <option value="ripple">Ripple</option>
         <option value="diagonal">Diagonal</option>
         <option value="checkerboard">Checkerboard</option>
-        <option value="radial-step">Radial Step</option>
         <option value="random">Random</option>
-        <option value="clustered-peaks">Clustered Peaks</option>
         <option value="spiral">Spiral</option>
-        <option value="stairs">Stairs</option>
         <option value="mirror">Mirror</option>
-        <option value="bowl">Bowl</option>
         <option value="dome">Dome</option>
       </select>
     </label>
     <label>Rows:<br>
-      <input type="range" min="1" max="20" value="10" oninput="rows.value = this.value; rowsRange.value = this.value;"
-        id="rowsRange">
-      <input type="number" id="rows" min="1" max="20" value="10">
+      <input type="range" id="rowsRange" min="1" max="20" value="10" oninput="rows.value = this.value;">
+      <input type="number" id="rows" min="1" max="20" value="10" onkeyup="rowsRange.value = this.value;">
     </label>
     <label>Columns:<br>
-      <input type="range" min="1" max="20" value="4"
-        oninput="columns.value = this.value; columnsRange.value = this.value;" id="columnsRange">
-      <input type="number" id="columns" min="1" max="20" value="4">
+      <input type="range" id="columnsRange" min="1" max="20" value="4" oninput="columns.value = this.value;">
+      <input type="number" id="columns" min="1" max="20" value="4" onkeyup="columnsRange.value = this.value;">
     </label>
     <p>Composition dimensions</p>
-    <!-- <label>Surface Length:<br>
-    <input type="range" min="1" max="1000" value="200"
-    oninput="surfaceLength.value = this.value; surfaceLengthRange.value = this.value;" id="surfaceLengthRange">
-    <input type="number" id="surfaceLength" min="1" max="1000" value="200">
-    </label> -->
-    <!-- <label>Surface Width:<br>
-    <input type="range" min="1" max="1000" value="200"
-    oninput="surfaceWidth.value = this.value; surfaceWidthRange.value = this.value;" id="surfaceWidthRange">
-    <input type="number" id="surfaceWidth" min="1" max="1000" value="200">
-    </label> -->
+
+    <label>Surface Length:<br>
+      <input type="range" id="surfaceLengthRange" min="0" max="1000" value="0" oninput="surfaceLength.value = this.value;">
+      <input type="number" id="surfaceLength" min="0" max="1000" value="0" onkeyup="surfaceLengthRange.value = this.value;">
+    </label>
+
+    <label>Surface Width:<br>
+      <input type="range" id="surfaceWidthRange" min="0" max="1000" value="0" oninput="surfaceWidth.value = this.value;">
+      <input type="number" id="surfaceWidth" min="0" max="1000" value="0" onkeyup="surfaceWidthRange.value = this.value;">
+    </label>
+
     <label>Surface Height:<br>
-      <input type="range" min="0" max="1000" value="170"
-        oninput="surfaceHeight.value = this.value; surfaceHeightRange.value = this.value;" id="surfaceHeightRange">
-      <input type="number" id="surfaceHeight" min="0" max="1000" value="170">
+      <input type="range" id="surfaceHeightRange" min="0" max="1000" value="170" oninput="surfaceHeight.value = this.value;">
+      <input type="number" id="surfaceHeight" min="0" max="1000" value="170" onkeyup="surfaceHeightRange.value = this.value;">
     </label>
     <label>Base Offset:<br>
-      <input type="range" min="0" max="100" value="6"
-        oninput="baseoffset.value = this.value; baseoffsetRange.value = this.value;" id="baseoffsetRange">
-      <input type="number" id="baseoffset" min="0" max="100" value="6">
+      <input type="range" id="baseoffsetRange" min="0" max="100" value="6" oninput="baseoffset.value = this.value;">
+      <input type="number" id="baseoffset" min="0" max="100" value="6" onkeyup="baseoffsetRange.value = this.value;">
     </label>
     <label>Spacing:<br>
-      <input type="range" min="1" max="100" value="14"
-        oninput="spacing.value = this.value; spacingRange.value = this.value;" id="spacingRange">
-      <input type="number" id="spacing" min="0" max="100" value="14">
+      <input type="range" id="spacingRange" min="1" max="100" value="14" oninput="spacing.value = this.value;">
+      <input type="number" id="spacing" min="0" max="100" value="14" onkeyup="spacingRange.value = this.value;">
     </label>
     <label>Lowest From Ground:<br>
-      <input type="range" min="1" max="1000" value="0"
-        oninput="lowest.value = this.value; lowestRange.value = this.value;" id="lowestRange">
-      <input type="number" id="lowest" min="1" max="1000" value="0">
+      <input type="range" id="lowestRange" min="1" max="1000" value="0" oninput="lowest.value = this.value;" >
+      <input type="number" id="lowest" min="1" max="1000" value="0" onkeyup="lowestRange.value = this.value;">
     </label>
     <label>Highest From Ground:<br>
-      <input type="range" min="0" max="1000" value="155"
-        oninput="highest.value = this.value; highestRange.value = this.value;" id="highestRange">
-      <input type="number" id="highest" min="0" max="1000" value="155">
+      <input type="range" id="highestRange" min="0" max="1000" value="155" oninput="highest.value = this.value;">
+      <input type="number" id="highest" min="0" max="1000" value="155" onkeyup="highestRange.value = this.value;">
     </label>
     <button id="generate" disabled>Generate Grid</button>
   </div>
@@ -265,8 +255,8 @@
       const highest = +highestRange.value;
       const surfaceHeight = +surfaceHeightRange.value;
       const baseoffset = +baseoffsetRange.value;
-      // const surfaceLength = +surfaceLengthRange.value;
-      // const surfaceWidth = +surfaceWidthRange.value;
+      let surfaceLength = +surfaceLengthRange.value;
+      let surfaceWidth = +surfaceWidthRange.value;
       const pattern = document.getElementById('pattern').value;
 
       if (surfaceHeight < lowest || surfaceHeight < highest) {
@@ -275,8 +265,12 @@
 
       const offsetX = -((cols - 1) / 2) * spacing / 2;
       const offsetZ = -((rows - 1) / 2) * spacing / 2;
-      const surfaceWidth = ((cols - 1) / 2) * spacing + baseoffset;
-      const surfaceLength = ((rows - 1) / 2) * spacing + baseoffset;
+
+      if (surfaceWidth == 0 && surfaceLength == 0){
+      surfaceWidth = ((cols - 1) / 2) * spacing + baseoffset;
+      surfaceLength = ((rows - 1) / 2) * spacing + baseoffset;
+      }
+
 
       const objHeight = new THREE.Box3().setFromObject(pendantModel.clone()).getSize(new THREE.Vector3()).y;
 
@@ -305,9 +299,6 @@
               const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
               yOffset = Math.sin(distance * 0.8) * 20 + 50;
 
-              // console.log(`row:${r}, col:${c}`)
-              // console.log(`rx: ${rx}, cxoffset: ${cxOffset}||${rx} * ${rx} + ${cxOffset} * ${cxOffset} = ${distance}`);
-              // console.log(`---------------------------------------------------`)
 
               break;
             }
@@ -317,29 +308,6 @@
 
             case 'checkerboard': {
               yOffset = ((r + c) % 2 ? highest : lowest);
-              break;
-              // const height = (lowest + highest) / 2;
-              // yOffset = height + ((r + c) % 2 ? highest : lowest);
-              // break;
-            }
-
-            case 'radial-step': {
-              const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
-              const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
-              const height = (lowest + highest) / 2;
-              yOffset = height + Math.floor(distance) * 10;
-              break;
-            }
-
-            case 'clustered-peaks': {
-              const dx = c - cols / 2;
-              const dy = r - rows / 2;
-              const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
-              const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
-              // const height = (lowest + highest) / 2;
-              const height = lowest;
-              const clusterDist = Math.sqrt((dx - 1) ** 2 + (dy - 1) ** 2);
-              yOffset = height + (clusterDist < 1.5 ? 30 : Math.random() * 10);
               break;
             }
 
@@ -353,13 +321,6 @@
               yOffset = height + angle * 10 + distance * 5;
               break;
             }
-            case 'stairs': {
-              const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
-              const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
-              const height = (lowest + highest) / 2;
-              yOffset = height + r * 10;
-              break;
-            }
 
             case 'mirror': {
               const dx = c - cols / 2;
@@ -368,13 +329,6 @@
               const height = (lowest + highest) / 2;
               yOffset = height + Math.abs(dx) * 10;
               break;
-            }
-            case 'bowl': {
-              const dx = c - cols / 2;
-              const cx = cols / 2, rx = r - rows / 2, cxOffset = c - cols / 2;
-              const distance = Math.sqrt(rx * rx + cxOffset * cxOffset);
-              const height = (lowest + highest) / 2;
-              yOffset = height - distance * 10;
             }
               break;
             case 'dome': {
