@@ -143,7 +143,7 @@
       <input type="number" id="spacing" min="0" max="100" value="14" onkeyup="spacingRange.value = this.value;">
     </label>
     <label>Lowest From Ground:<br>
-      <input type="range" id="lowestRange" min="1" max="1000" value="0" oninput="lowest.value = this.value;" >
+      <input type="range" id="lowestRange" min="1" max=surfaceHeightRange.value value="0" oninput="lowest.value = this.value;" >
       <input type="number" id="lowest" min="1" max="1000" value="0" onkeyup="lowestRange.value = this.value;">
     </label>
     <label>Highest From Ground:<br>
@@ -357,6 +357,7 @@
           const clone = pendantModel.clone();
           clone.position.set(offsetX + (c / 2) * spacing, yOffset, offsetZ + (r / 2) * spacing);
           clone.userData.isPendant = true;
+          clone.rotation.set(0, (Math.random()*100), 0); // in radians
           scene.add(clone);
 
           const stringHeight = (surfaceHeight) - yOffset;
